@@ -4,7 +4,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
-import android.util.Log;
 
 public class Character implements Runnable {
 
@@ -14,9 +13,6 @@ public class Character implements Runnable {
     boolean is_moving;
     boolean is_jumping;
     boolean is_moving_jump;
-
-    boolean is_jumping_up;
-    boolean is_jumping_down;
 
     boolean is_moving_right;
     boolean is_moving_left;
@@ -60,14 +56,12 @@ public class Character implements Runnable {
                 goUp();
             else {
                 is_jumping = false;
-                is_jumping_up = false;
             }
         } else {
             if (y < PLAYER_HEIGHT)
                 goDown();
             else {
                 is_moving_jump = false;
-                is_jumping_down = false;
             }
         }
 
@@ -104,13 +98,10 @@ public class Character implements Runnable {
     }
 
     private void goUp() {
-        is_jumping_up = true;
         y -= 40;
     }
 
     private void goDown() {
-        is_jumping_down = true;
-
         if (y + 20 > PLAYER_HEIGHT)
             y += (PLAYER_HEIGHT - y);
         else
