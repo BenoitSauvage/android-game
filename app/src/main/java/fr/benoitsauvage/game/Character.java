@@ -24,6 +24,8 @@ public class Character implements Runnable {
     boolean can_move_right;
     boolean can_move_left;
 
+    Tile onTile;
+
     int JUMP_HEIGHT = 500;
     int PLAYER_HEIGHT;
 
@@ -56,8 +58,7 @@ public class Character implements Runnable {
         if (is_jumping) {
             if (y > (jump_start - JUMP_HEIGHT))
                 goUp();
-
-            if (y <= (jump_start - JUMP_HEIGHT)) {
+            else {
                 is_jumping = false;
                 is_jumping_up = false;
             }

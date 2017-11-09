@@ -75,34 +75,49 @@ class GameView extends View {
         character.can_move_right = true;
 
         for (Tile tile : tileGenerator.tiles) {
-            if (character.is_moving_right) {
-                if (checkTileRight(tile))
+            if (character.is_moving_right && checkTileRight(tile))
                     character.can_move_right = false;
-            }
 
-            if (character.is_moving_left) {
-                if (checkTileLeft(tile))
-                    character.can_move_left = false;
-            }
-
-            if (character.is_jumping_down) {
-
-            }
+            if (character.is_moving_left && checkTileLeft(tile))
+                character.can_move_left = false;
         }
+
+        checkTileDown();
     }
 
     private boolean checkTileRight(Tile tile) {
-        boolean x = (int) ((character.x + GRID_CELL_SIZE + character.move_x) / GRID_CELL_SIZE) == (int) (tile.pos_x / GRID_CELL_SIZE);
-        boolean y = (int) ((character.y + GRID_CELL_SIZE - 10) / GRID_CELL_SIZE) == (int) (tile.pos_y / GRID_CELL_SIZE);
+        boolean x = (character.x + GRID_CELL_SIZE + character.move_x) / GRID_CELL_SIZE == tile.pos_x / GRID_CELL_SIZE;
+        boolean y = (character.y + GRID_CELL_SIZE - 10) / GRID_CELL_SIZE == tile.pos_y / GRID_CELL_SIZE;
 
         return x && y;
     }
 
     private boolean checkTileLeft(Tile tile) {
-        boolean x = (int) ((character.x + character.move_x) / GRID_CELL_SIZE) == (int) ((tile.pos_x + GRID_CELL_SIZE) / GRID_CELL_SIZE - 1);
-        boolean y = (int) ((character.y + GRID_CELL_SIZE - 10) / GRID_CELL_SIZE) == (int) (tile.pos_y / GRID_CELL_SIZE);
+        boolean x = (character.x + character.move_x) / GRID_CELL_SIZE == (tile.pos_x + GRID_CELL_SIZE) / GRID_CELL_SIZE - 1;
+        boolean y = (character.y + GRID_CELL_SIZE - 10) / GRID_CELL_SIZE == tile.pos_y / GRID_CELL_SIZE;
 
         return x && y;
+    }
+
+    private void checkTileDown() {
+        int x1 = character.x / GRID_CELL_SIZE + 1;
+        int x2 = (character.x + GRID_CELL_SIZE) / GRID_CELL_SIZE + 1;
+
+        int y = (character.y + GRID_CELL_SIZE + 10) / GRID_CELL_SIZE;
+
+        for (Tile tile : tileGenerator.tiles) {
+            if ((tile.pos_x / GRID_CELL_SIZE) + 1 == x1 || (tile.pos_x / GRID_CELL_SIZE) + 1 == x2) {
+                int tile_height = tile.pos_y / GRID_CELL_SIZE + 1;
+
+                if ((character.onTile.pos_y / GRID_CELL_SIZE) + 1 >= (tile.pos_y / GRID_CELL_SIZE))
+                    character.onTile = tile;
+
+                Log.d("TILE", Integer.toString(y) + " " + Integer.toString(tile_height));
+            }
+        }
+
+        // character.PLAYER_HEIGHT = character.onTile.pos_y;
+
     }
 
     private String loadJSON() {

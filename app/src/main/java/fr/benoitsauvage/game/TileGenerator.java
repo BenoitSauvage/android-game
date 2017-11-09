@@ -45,6 +45,8 @@ public class TileGenerator {
             Tile tile = new Tile(image, lx, ly, x, y, IMAGE_SIZE, GRID_CELL_SIZE);
             tiles.add(tile);
         }
+
+        parent.character.onTile = tiles.get(0);
     }
 
     public void renderTiles(Canvas canvas) {
