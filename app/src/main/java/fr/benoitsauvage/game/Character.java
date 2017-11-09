@@ -71,8 +71,6 @@ public class Character implements Runnable {
             }
         }
 
-        Log.d("JUMP", Boolean.toString(is_jumping_up) + " " + Boolean.toString(is_jumping_down));
-
         handler.post(this);
     }
 
@@ -112,6 +110,10 @@ public class Character implements Runnable {
 
     private void goDown() {
         is_jumping_down = true;
-        y += 20;
+
+        if (y + 20 > PLAYER_HEIGHT)
+            y += (PLAYER_HEIGHT - y);
+        else
+            y += 20;
     }
 }

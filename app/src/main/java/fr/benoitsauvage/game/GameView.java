@@ -10,6 +10,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 class GameView extends View {
 
@@ -100,6 +101,8 @@ class GameView extends View {
     }
 
     private void checkTileDown() {
+        ArrayList<Tile> underTiles = new ArrayList<>();
+
         int x1 = character.x / GRID_CELL_SIZE + 1;
         int x2 = (character.x + GRID_CELL_SIZE) / GRID_CELL_SIZE + 1;
 
@@ -107,17 +110,24 @@ class GameView extends View {
 
         for (Tile tile : tileGenerator.tiles) {
             if ((tile.pos_x / GRID_CELL_SIZE) + 1 == x1 || (tile.pos_x / GRID_CELL_SIZE) + 1 == x2) {
-                int tile_height = tile.pos_y / GRID_CELL_SIZE + 1;
-
-                if ((character.onTile.pos_y / GRID_CELL_SIZE) + 1 >= (tile.pos_y / GRID_CELL_SIZE))
-                    character.onTile = tile;
-
-                Log.d("TILE", Integer.toString(y) + " " + Integer.toString(tile_height));
+                underTiles.add(tile);
             }
         }
 
-        // character.PLAYER_HEIGHT = character.onTile.pos_y;
+        Tile underTile = null;
 
+        for (Tile tile : underTiles) {
+            if (null == underTile || tile.pos_y < underTile.pos_y) {
+                underTile = tile;
+            }
+        }
+
+        if (underTile == null)
+            character.PLAYER_HEIGHT = GRID_CELL_SIZE * 10;
+        else
+            character.PLAYER_HEIGHT = ((underTile.pos_y / GRID_CELL_SIZE) - 1) * GRID_CELL_SIZE;
+
+        Log.d("TILE", Integer.toString(character.PLAYER_HEIGHT));
     }
 
     private String loadJSON() {
