@@ -24,9 +24,6 @@ class GameView extends View {
     int GROUND_HEIGHT;
     int GRID_CELL_SIZE;
 
-    int DIRECTION_RIGHT = 0;
-    int DIRECTION_LEFT = 1;
-
     public GameView(Context context, Handler h) {
         super(context);
         this.context = context;
@@ -35,6 +32,7 @@ class GameView extends View {
         String json = loadJSON();
 
         character = new Character(this, handler);
+        character.has_to_move = true;
         tileGenerator = new TileGenerator(this, json);
         handler.post(character);
     }

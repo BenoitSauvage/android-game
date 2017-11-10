@@ -10,6 +10,8 @@ public class Character implements Runnable {
     GameView parent;
     Handler handler;
 
+    boolean has_to_move = false;
+
     boolean is_moving;
     boolean is_jumping;
     boolean is_moving_jump;
@@ -39,33 +41,35 @@ public class Character implements Runnable {
 
     @Override
     public void run() {
-        parent.invalidate();
+        if (has_to_move) {
+            parent.invalidate();
 
-        if (is_moving) {
-            parent.checkColission();
+            if (is_moving) {
+                parent.checkColission();
 
-            if (move_x > 0 && parent.getWidth() >= (x + w + move_x) && can_move_right)
-                x += move_x;
+                if (move_x > 0 && parent.getWidth() >= (x + w + move_x) && can_move_right)
+                    x += move_x;
 
-            if (move_x < 0 && (x + move_x) >= 0  && can_move_left)
-                x += move_x;
-        }
-
-        if (is_jumping) {
-            if (y > (jump_start - JUMP_HEIGHT))
-                goUp();
-            else {
-                is_jumping = false;
+                if (move_x < 0 && (x + move_x) >= 0  && can_move_left)
+                    x += move_x;
             }
-        } else {
-            if (y < PLAYER_HEIGHT)
-                goDown();
-            else {
-                is_moving_jump = false;
-            }
-        }
 
-        handler.post(this);
+            if (is_jumping) {
+                if (y > (jump_start - JUMP_HEIGHT))
+                    goUp();
+                else {
+                    is_jumping = false;
+                }
+            } else {
+                if (y < PLAYER_HEIGHT)
+                    goDown();
+                else {
+                    is_moving_jump = false;
+                }
+            }
+
+            handler.post(this);
+        }
     }
 
     public void render(Canvas canvas) {
