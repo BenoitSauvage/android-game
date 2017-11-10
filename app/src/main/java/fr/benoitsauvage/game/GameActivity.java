@@ -1,9 +1,12 @@
 package fr.benoitsauvage.game;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
+import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,5 +94,32 @@ public class GameActivity extends Activity {
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        String title = getResources().getString(R.string.dialog_title);
+        String message = getResources().getString(R.string.dialog_message);
+
+        game.character.has_to_move = false;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.game_go_back_dialog));
+        builder.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        game.character.has_to_move = true;
+                        game.handler.post(game.character);
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
