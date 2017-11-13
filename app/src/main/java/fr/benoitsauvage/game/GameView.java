@@ -1,6 +1,8 @@
 package fr.benoitsauvage.game;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.util.Log;
@@ -21,17 +23,24 @@ class GameView extends View {
     LifeManager lifeManager;
 
     TileGenerator tileGenerator;
+    MobGenerator mobGenerator;
+
+    Bitmap image;
 
     float density;
     int GROUND_HEIGHT;
     int GRID_CELL_SIZE;
+    int NB_COLUMNS = 5;
+    int IMAGE_SIZE;
 
     public GameView(Context context, Handler h) {
         super(context);
         this.context = context;
         handler = h;
 
-        String json = loadJSON();
+        image = BitmapFactory.decodeResource(getResources(), R.drawable.spritesheet);
+        IMAGE_SIZE = image.getWidth() / NB_COLUMNS;
+
         character = new Character(this, handler);
 
         // Init player life
@@ -42,7 +51,15 @@ class GameView extends View {
 
         handler.post(character);
 
-        tileGenerator = new TileGenerator(this, json);
+        // Generate tiles
+        String tilesJson = loadTilesJSON();
+        tileGenerator = new TileGenerator(this, tilesJson);
+
+        // Generate mobs
+        String mobsJson = loadMobsJSON();
+        mobGenerator = new MobGenerator(this, mobsJson);
+
+        // Init life manager
         lifeManager = new LifeManager(this, character);
     }
 
@@ -70,11 +87,18 @@ class GameView extends View {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        try {
+            mobGenerator.generateMobs();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         tileGenerator.renderTiles(canvas);
+        mobGenerator.renderMobs(canvas);
         lifeManager.render(canvas);
         character.render(canvas);
     }
@@ -138,11 +162,31 @@ class GameView extends View {
         Log.d("TILE", Integer.toString(character.PLAYER_HEIGHT));
     }
 
-    private String loadJSON() {
+    private String loadTilesJSON() {
         String json;
 
         try {
             InputStream is = getContext().getAssets().open("tiles.json");
+
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
+        return json;
+    }
+
+    private String loadMobsJSON() {
+        String json;
+
+        try {
+            InputStream is = getContext().getAssets().open("mobs.json");
 
             int size = is.available();
             byte[] buffer = new byte[size];

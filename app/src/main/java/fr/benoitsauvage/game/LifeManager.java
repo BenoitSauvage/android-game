@@ -28,7 +28,7 @@ public class LifeManager {
 
     public void render(Canvas canvas) {
         int line_x = 3;
-        int line_y = 1;
+        int line_y;
         int pos_x = 1;
 
         for (int i = 2; i <= MAX_LIFE; i += 2) {
