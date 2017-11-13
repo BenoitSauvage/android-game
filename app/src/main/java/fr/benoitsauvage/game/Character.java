@@ -26,6 +26,7 @@ public class Character implements Runnable {
 
     int JUMP_HEIGHT = 500;
     int PLAYER_HEIGHT;
+    int INVICIBILITY = 0;
 
     int LIFE = 6;
 
@@ -45,6 +46,12 @@ public class Character implements Runnable {
     public void run() {
         if (has_to_move) {
             parent.invalidate();
+
+            // parent.checkMobs();
+
+            if (INVICIBILITY > 0) {
+                --INVICIBILITY;
+            }
 
             if (is_moving) {
                 parent.checkColission();
@@ -77,6 +84,10 @@ public class Character implements Runnable {
     public void render(Canvas canvas) {
         Paint p = new Paint();
         p.setColor(Color.RED);
+
+        if (INVICIBILITY > 0) {
+            p.setColor(Color.BLUE);
+        }
 
         canvas.drawRect(x, y - h, x + w, y, p);
     }
