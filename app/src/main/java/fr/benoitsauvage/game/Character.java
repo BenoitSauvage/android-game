@@ -4,19 +4,17 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
-import android.util.Log;
 
 public class Character implements Runnable {
 
     GameView parent;
     Handler handler;
 
+    boolean has_to_move = false;
+
     boolean is_moving;
     boolean is_jumping;
     boolean is_moving_jump;
-
-    boolean is_jumping_up;
-    boolean is_jumping_down;
 
     boolean is_moving_right;
     boolean is_moving_left;
@@ -24,8 +22,12 @@ public class Character implements Runnable {
     boolean can_move_right;
     boolean can_move_left;
 
+    Tile onTile;
+
     int JUMP_HEIGHT = 500;
     int PLAYER_HEIGHT;
+
+    int LIFE = 6;
 
     int x = 0, y, jump_start;
     int w, h;
@@ -41,38 +43,35 @@ public class Character implements Runnable {
 
     @Override
     public void run() {
-        parent.invalidate();
+        if (has_to_move) {
+            parent.invalidate();
 
-        if (is_moving) {
-            parent.checkColission();
+            if (is_moving) {
+                parent.checkColission();
 
-            if (move_x > 0 && parent.getWidth() >= (x + w + move_x) && can_move_right)
-                x += move_x;
+                if (move_x > 0 && parent.getWidth() >= (x + w + move_x) && can_move_right)
+                    x += move_x;
 
-            if (move_x < 0 && (x + move_x) >= 0  && can_move_left)
-                x += move_x;
-        }
-
-        if (is_jumping) {
-            if (y > (jump_start - JUMP_HEIGHT))
-                goUp();
-
-            if (y <= (jump_start - JUMP_HEIGHT)) {
-                is_jumping = false;
-                is_jumping_up = false;
+                if (move_x < 0 && (x + move_x) >= 0  && can_move_left)
+                    x += move_x;
             }
-        } else {
-            if (y < PLAYER_HEIGHT)
-                goDown();
-            else {
-                is_moving_jump = false;
-                is_jumping_down = false;
+
+            if (is_jumping) {
+                if (y > (jump_start - JUMP_HEIGHT))
+                    goUp();
+                else {
+                    is_jumping = false;
+                }
+            } else {
+                if (y < PLAYER_HEIGHT)
+                    goDown();
+                else {
+                    is_moving_jump = false;
+                }
             }
+
+            handler.post(this);
         }
-
-        Log.d("JUMP", Boolean.toString(is_jumping_up) + " " + Boolean.toString(is_jumping_down));
-
-        handler.post(this);
     }
 
     public void render(Canvas canvas) {
@@ -105,12 +104,13 @@ public class Character implements Runnable {
     }
 
     private void goUp() {
-        is_jumping_up = true;
         y -= 40;
     }
 
     private void goDown() {
-        is_jumping_down = true;
-        y += 20;
+        if (y + 20 > PLAYER_HEIGHT)
+            y += (PLAYER_HEIGHT - y);
+        else
+            y += 20;
     }
 }
