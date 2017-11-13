@@ -1,6 +1,7 @@
 package fr.benoitsauvage.game;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -44,7 +45,7 @@ class GameView extends View {
         character = new Character(this, handler);
 
         // Init player life
-        character.LIFE = 3;
+        character.LIFE = 6;
 
         // Init player deplacement
         character.has_to_move = true;
@@ -97,6 +98,9 @@ class GameView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+
+        checkGameOver();
+
         tileGenerator.renderTiles(canvas);
         mobGenerator.renderMobs(canvas);
         lifeManager.render(canvas);
@@ -116,6 +120,16 @@ class GameView extends View {
         }
 
         checkTileDown();
+    }
+
+    public void checkMobs() {
+        for (Mob mob : mobGenerator.mobs) {
+            if (character.x >= mob.pos_x && character.x <= mob.pos_x + GRID_CELL_SIZE ||
+                    character.x + GRID_CELL_SIZE >= mob.pos_x && character.x + GRID_CELL_SIZE <= mob.pos_x + GRID_CELL_SIZE) {
+                character.LIFE -= 1;
+                character.INVICIBILITY = 500;
+            }
+        }
     }
 
     private boolean checkTileRight(Tile tile) {
@@ -200,5 +214,16 @@ class GameView extends View {
         }
 
         return json;
+    }
+
+    private void checkGameOver() {
+        if (character.LIFE <= 0) {
+            gameOver();
+        }
+    }
+
+    private void gameOver() {
+        Intent intent = new Intent(context, GameOverActivity.class);
+        context.startActivity(intent);
     }
 }
