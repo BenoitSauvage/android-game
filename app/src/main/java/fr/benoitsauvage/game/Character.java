@@ -27,6 +27,8 @@ public class Character implements Runnable {
     int JUMP_HEIGHT = 500;
     int PLAYER_HEIGHT;
 
+    int LIFE = 6;
+
     int x = 0, y, jump_start;
     int w, h;
 

@@ -5,10 +5,4 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="game_go_back_dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:textColor">#00FF00</item>
-        <item name="android:typeface">monospace</item>
-        <item name="android:textSize">10sp</item>
-    </style>
-
 </resources>

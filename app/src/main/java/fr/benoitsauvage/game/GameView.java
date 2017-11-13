@@ -18,6 +18,8 @@ class GameView extends View {
     Handler handler;
     Character character;
 
+    LifeManager lifeManager;
+
     TileGenerator tileGenerator;
 
     float density;
@@ -30,11 +32,18 @@ class GameView extends View {
         handler = h;
 
         String json = loadJSON();
-
         character = new Character(this, handler);
+
+        // Init player life
+        character.LIFE = 3;
+
+        // Init player deplacement
         character.has_to_move = true;
-        tileGenerator = new TileGenerator(this, json);
+
         handler.post(character);
+
+        tileGenerator = new TileGenerator(this, json);
+        lifeManager = new LifeManager(this, character);
     }
 
     @Override
@@ -66,6 +75,7 @@ class GameView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         tileGenerator.renderTiles(canvas);
+        lifeManager.render(canvas);
         character.render(canvas);
     }
 
