@@ -31,7 +31,7 @@ class GameView extends View {
     float density;
     int GROUND_HEIGHT;
     int GRID_CELL_SIZE;
-    int NB_COLUMNS = 5;
+    final int NB_COLUMNS = 5;
     int IMAGE_SIZE;
 
     public GameView(Context context, Handler h) {
@@ -113,7 +113,7 @@ class GameView extends View {
 
         for (Tile tile : tileGenerator.tiles) {
             if (character.is_moving_right && checkTileRight(tile))
-                    character.can_move_right = false;
+                character.can_move_right = false;
 
             if (character.is_moving_left && checkTileLeft(tile))
                 character.can_move_left = false;
@@ -123,11 +123,16 @@ class GameView extends View {
     }
 
     public void checkMobs() {
+        if (character.INVICIBILITY > 0)
+            return;
+
         for (Mob mob : mobGenerator.mobs) {
-            if (character.x >= mob.pos_x && character.x <= mob.pos_x + GRID_CELL_SIZE ||
-                    character.x + GRID_CELL_SIZE >= mob.pos_x && character.x + GRID_CELL_SIZE <= mob.pos_x + GRID_CELL_SIZE) {
+            if ((character.x >= mob.pos_x && character.x <= mob.pos_x + GRID_CELL_SIZE ||
+                character.x + GRID_CELL_SIZE >= mob.pos_x && character.x + GRID_CELL_SIZE <= mob.pos_x + GRID_CELL_SIZE) &&
+                (character.y >= mob.height * GRID_CELL_SIZE && character.y <= (mob.height + 1) * GRID_CELL_SIZE ||
+                character.y + GRID_CELL_SIZE >= mob.height * GRID_CELL_SIZE && character.y + GRID_CELL_SIZE <= (mob.height + 1) * GRID_CELL_SIZE)) {
                 character.LIFE -= 1;
-                character.INVICIBILITY = 500;
+                character.INVICIBILITY = 100;
             }
         }
     }

@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
-import android.util.Log;
 
 public class Mob implements Runnable {
 
@@ -67,8 +66,6 @@ public class Mob implements Runnable {
 
             handler.post(this);
         }
-
-        Log.d("MOB", "IS_HERE");
     }
 
     public void render(Canvas canvas) {
