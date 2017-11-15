@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -126,11 +127,25 @@ class GameView extends View {
         if (character.INVICIBILITY > 0)
             return;
 
+        Rect playerRect = new Rect(
+                character.x,
+                character.y,
+                character.x + GRID_CELL_SIZE,
+                character.y + GRID_CELL_SIZE
+        );
+
+        // Log.d("COLLISION", Integer.toString(character.x) + " " + Integer.toString(character.y));
+
         for (Mob mob : mobGenerator.mobs) {
-            if ((character.x >= mob.pos_x && character.x <= mob.pos_x + GRID_CELL_SIZE ||
-                character.x + GRID_CELL_SIZE >= mob.pos_x && character.x + GRID_CELL_SIZE <= mob.pos_x + GRID_CELL_SIZE) &&
-                (character.y >= mob.height * GRID_CELL_SIZE && character.y <= (mob.height + 1) * GRID_CELL_SIZE ||
-                character.y + GRID_CELL_SIZE >= mob.height * GRID_CELL_SIZE && character.y + GRID_CELL_SIZE <= (mob.height + 1) * GRID_CELL_SIZE)) {
+            // Log.d("COLLISION", Integer.toString(mob.pos_x) + " " + Integer.toString(mob.height * GRID_CELL_SIZE));
+
+            Rect mobRect = new Rect(
+                    mob.pos_x,
+                    mob.height * GRID_CELL_SIZE,
+                    mob.pos_x + GRID_CELL_SIZE,
+                    mob.height * GRID_CELL_SIZE + GRID_CELL_SIZE
+            );
+            if (playerRect.intersect(mobRect)) {
                 character.LIFE -= 1;
                 character.INVICIBILITY = 100;
             }

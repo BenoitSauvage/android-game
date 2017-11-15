@@ -47,7 +47,7 @@ public class Character implements Runnable {
         if (has_to_move) {
             parent.invalidate();
 
-            parent.checkMobs();
+            // parent.checkMobs();
 
             if (INVICIBILITY > 0) {
                 --INVICIBILITY;
