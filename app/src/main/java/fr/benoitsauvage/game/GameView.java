@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 class GameView extends View {
+
+    Bitmap background;
+    Rect backgroundSrc;
+    RectF backgroundDest;
 
     Context context;
     Handler handler;
@@ -34,6 +39,8 @@ class GameView extends View {
     int GRID_CELL_SIZE;
     final int NB_COLUMNS = 5;
     int IMAGE_SIZE;
+
+    int height, width;
 
     public GameView(Context context, Handler h) {
         super(context);
@@ -69,17 +76,20 @@ class GameView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
         density = getResources().getDisplayMetrics().density;
-        int width = getResources().getDisplayMetrics().widthPixels;
+        width = getResources().getDisplayMetrics().widthPixels;
+        height = getResources().getDisplayMetrics().heightPixels;
 
-        GRID_CELL_SIZE = getResources().getDisplayMetrics().heightPixels / 10;
+        GRID_CELL_SIZE = height / 10;
         GROUND_HEIGHT = GRID_CELL_SIZE * 7;
         int PLAYER_HEIGHT = GROUND_HEIGHT - GRID_CELL_SIZE;
 
         setMeasuredDimension(width, GROUND_HEIGHT);
+        backgroundSrc = new Rect(0, 0, width, height);
+        backgroundDest = new RectF(0, 0, width, height);
 
         character.PLAYER_HEIGHT = PLAYER_HEIGHT;
         character.y = PLAYER_HEIGHT;
-        character.w = getResources().getDisplayMetrics().heightPixels / 10;
+        character.w = height / 10;
         character.h = character.w;
 
         tileGenerator.GRID_CELL_SIZE = GRID_CELL_SIZE;
@@ -102,7 +112,12 @@ class GameView extends View {
 
         checkGameOver();
 
-        tileGenerator.renderTiles(canvas);
+        if (character.x > 300) {
+            character.has_to_move = false;
+        }
+
+        canvas.drawBitmap(background, backgroundSrc, backgroundDest, null);
+        // canvas.drawBitmap(background, 0.0f, 0.0f, null);
         mobGenerator.renderMobs(canvas);
         lifeManager.render(canvas);
         character.render(canvas);
@@ -134,10 +149,7 @@ class GameView extends View {
                 character.y + GRID_CELL_SIZE
         );
 
-        // Log.d("COLLISION", Integer.toString(character.x) + " " + Integer.toString(character.y));
-
         for (Mob mob : mobGenerator.mobs) {
-            // Log.d("COLLISION", Integer.toString(mob.pos_x) + " " + Integer.toString(mob.height * GRID_CELL_SIZE));
 
             Rect mobRect = new Rect(
                     mob.pos_x,
@@ -245,5 +257,32 @@ class GameView extends View {
     private void gameOver() {
         Intent intent = new Intent(context, GameOverActivity.class);
         context.startActivity(intent);
+    }
+
+    public void drawBackground(ArrayList<Tile> tiles) {
+        int w = 8000;
+
+        Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
+        Bitmap bmp = Bitmap.createBitmap(w, height, conf); // this creates a MUTABLE bitmap
+        Canvas canvas = new Canvas(bmp);
+
+        for (Tile tile : tiles) {
+            tile.render(canvas);
+        }
+
+        background = bmp;
+    }
+
+    public void moveBackground() {
+
+        checkColission();
+
+        int delta = 10;
+        backgroundSrc = new Rect(delta, 0, width + delta, height);
+
+        for (Tile tile : tileGenerator.tiles) {
+            Log.d("POS_X", Integer.toString(tile.pos_x));
+            tile.pos_x -= delta;
+        }
     }
 }
