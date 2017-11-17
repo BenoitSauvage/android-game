@@ -47,6 +47,8 @@ public class TileGenerator {
         }
 
         parent.character.onTile = tiles.get(0);
+
+        parent.drawBackground(tiles);
     }
 
     public void renderTiles(Canvas canvas) {

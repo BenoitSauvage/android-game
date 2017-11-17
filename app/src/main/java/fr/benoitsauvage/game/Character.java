@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
+import android.util.Log;
 
 public class Character implements Runnable {
 
@@ -44,9 +45,9 @@ public class Character implements Runnable {
 
     @Override
     public void run() {
-        if (has_to_move) {
-            parent.invalidate();
+        parent.invalidate();
 
+        if (has_to_move) {
             // parent.checkMobs();
 
             if (INVICIBILITY > 0) {
@@ -76,9 +77,11 @@ public class Character implements Runnable {
                     is_moving_jump = false;
                 }
             }
-
-            handler.post(this);
+        } else {
+            parent.moveBackground();
         }
+
+        handler.post(this);
     }
 
     public void render(Canvas canvas) {
