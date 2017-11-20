@@ -121,4 +121,8 @@ public class GameActivity extends Activity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    public void gameOver() {
+
+    }
 }
