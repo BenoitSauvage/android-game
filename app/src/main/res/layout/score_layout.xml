@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/score"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/score_name"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="Benoit"
+        android:gravity="center_vertical|right"
+        android:textSize="24sp"
+        android:paddingRight="10dp" />
+
+    <TextView
+        android:id="@+id/score_score"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="1234"
+        android:gravity="center_vertical|left"
+        android:textSize="24sp"
+        android:paddingLeft="10dp"/>
+</LinearLayout>

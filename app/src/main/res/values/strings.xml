@@ -12,4 +12,6 @@
     <string name="game_over_menu">MENU</string>
     <string name="game_over_score">Score :</string>
     <string name="game_over_input">Enter your name</string>
+    <string name="scores_title">LEADERBOARD</string>
+    <string name="scores_clear">Clear</string>
 </resources>
