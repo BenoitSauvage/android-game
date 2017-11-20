@@ -48,13 +48,12 @@ public class GameOverActivity extends Activity {
         input = findViewById(R.id.player_name);
 
         score = (int) (MAX_TIME - (end_time - start_time)) / 100;
+        score += life * 50;
 
         if (intent.getBooleanExtra("win", false))
             score += 1000;
         else
             score = (score - 1000) > 0 ? (score - 1000) : 0;
-
-        score += life * 50;
 
         score_text.setText(Integer.toString(score));
         title_text.setText(title.toUpperCase());
