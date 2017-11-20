@@ -2,11 +2,9 @@ package fr.benoitsauvage.game;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
-import android.util.Log;
 
 public class Mob implements Runnable {
 
@@ -68,8 +66,6 @@ public class Mob implements Runnable {
 
             handler.post(this);
         }
-
-        Log.d("THREAD", "MOB RUNNING");
     }
 
     public void render(Canvas canvas) {

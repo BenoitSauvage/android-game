@@ -9,9 +9,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.view.View;
-
 import org.json.JSONException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -118,11 +116,10 @@ class GameView extends View {
         mobGenerator.renderMobs(canvas);
         lifeManager.render(canvas);
 
-        if (
-                (character.x >= 300 && backgroundSrc.right < 5000) ||
-                (character.x <= 300 && backgroundSrc.left > 0 && character.is_moving_left)
-            )
+        if ((character.x >= 300 && backgroundSrc.right < 5000) ||
+            (character.x <= 300 && backgroundSrc.left > 0 && character.is_moving_left)) {
             character.has_to_move = false;
+        }
     }
 
     public void checkColission() {
