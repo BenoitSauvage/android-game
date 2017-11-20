@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -113,15 +114,18 @@ class GameView extends View {
     protected void onDraw(Canvas canvas) {
 
         checkGameOver();
+        checkWin();
 
         canvas.drawBitmap(background, backgroundSrc, backgroundDest, null);
+        character.render(canvas);
         mobGenerator.renderMobs(canvas);
         lifeManager.render(canvas);
-        character.render(canvas);
 
-        if (character.x >= 300) {
+        if (
+                (character.x >= 300 && backgroundSrc.right < 5000) ||
+                (character.x <= 300 && backgroundSrc.left > 0 && character.is_moving_left)
+            )
             character.has_to_move = false;
-        }
     }
 
     public void checkColission() {
@@ -258,9 +262,25 @@ class GameView extends View {
         }
     }
 
+    private void checkWin() {
+        if (character.x > 14 * GRID_CELL_SIZE) {
+            handler.removeCallbacksAndMessages(null);
+            winGame();
+        }
+    }
+
     private void gameOver() {
         Intent intent = new Intent(getContext(), GameOverActivity.class);
         intent.putExtra("time", start_time);
+        intent.putExtra("title", getResources().getString(R.string.game_over_title));
+        getContext().startActivity(intent);
+    }
+
+    private void winGame() {
+        Intent intent = new Intent(getContext(), GameOverActivity.class);
+        intent.putExtra("time", start_time);
+        intent.putExtra("title", getResources().getString(R.string.win_title));
+        intent.putExtra("win", true);
         getContext().startActivity(intent);
     }
 
@@ -274,6 +294,9 @@ class GameView extends View {
         for (Tile tile : tiles) {
             tile.render(canvas);
         }
+
+        Tile end = new Tile(image, 5, 5, 44 * GRID_CELL_SIZE, 6 * GRID_CELL_SIZE, IMAGE_SIZE, GRID_CELL_SIZE);
+        end.render(canvas);
 
         background = bmp;
     }
@@ -293,7 +316,7 @@ class GameView extends View {
             backgroundSrc = new Rect(backgroundSrc.left + delta, 0, backgroundSrc.right + delta, height);
             character.move_x = delta;
 
-            if (backgroundSrc.left <= 0) {
+            if (backgroundSrc.left <= 0 || backgroundSrc.right >= 5000) {
                 character.has_to_move = true;
                 character.x -= 10;
             }

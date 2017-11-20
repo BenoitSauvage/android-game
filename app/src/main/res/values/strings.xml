@@ -8,10 +8,12 @@
     <string name="dialog_message">Are you sure you want to return to the main menu ?</string>
     <string name="dialog_yes">Yes, please</string>
     <string name="dialog_no">No, I\'m staying</string>
+    <string name="game_over_title">No, I\'m staying</string>
     <string name="game_over_text">GAME OVER</string>
     <string name="game_over_menu">MENU</string>
     <string name="game_over_score">Score :</string>
     <string name="game_over_input">Enter your name</string>
     <string name="scores_title">LEADERBOARD</string>
     <string name="scores_clear">Clear</string>
+    <string name="win_title">YOU WIN!</string>
 </resources>

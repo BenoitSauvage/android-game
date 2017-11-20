@@ -77,7 +77,7 @@
         android:ems="10"
         android:hint="@string/game_over_input"
         android:inputType="textPersonName"
-        android:textAlignment="center"
+        android:textAlignment="textEnd"
         app:layout_constraintBottom_toTopOf="@+id/game_over_menu"
         app:layout_constraintStart_toStartOf="parent" />
 
