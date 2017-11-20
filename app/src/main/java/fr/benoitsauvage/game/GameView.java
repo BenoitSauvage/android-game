@@ -42,10 +42,14 @@ class GameView extends View {
 
     int height, width;
 
+    long start_time;
+
     public GameView(Context c, Handler h) {
         super(c);
         context = c;
         handler = h;
+
+        start_time = System.currentTimeMillis();
 
         image = BitmapFactory.decodeResource(getResources(), R.drawable.spritesheet);
         IMAGE_SIZE = image.getWidth() / NB_COLUMNS;
@@ -256,6 +260,7 @@ class GameView extends View {
 
     private void gameOver() {
         Intent intent = new Intent(getContext(), GameOverActivity.class);
+        intent.putExtra("time", start_time);
         getContext().startActivity(intent);
     }
 
