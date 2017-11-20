@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class ScoresActivity extends Activity {
@@ -33,7 +34,6 @@ public class ScoresActivity extends Activity {
 
         Map<String, ?> allEntries = sharedPref.getAll();
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            Log.d("SCORES", entry.getKey() + ": " + entry.getValue().toString());
             layout.addView(generateLayout(entry));
         }
 
@@ -54,11 +54,11 @@ public class ScoresActivity extends Activity {
         TextView score_name = layout.findViewById(R.id.score_name);
         TextView score = layout.findViewById(R.id.score_score);
 
-        score_name.setTypeface(Typeface.MONOSPACE);
-        score_name.setText(entry.getKey());
+        Log.d("VALUE", entry.getValue().toString());
 
-        score.setTypeface(Typeface.MONOSPACE);
-        score.setText(entry.getValue().toString());
+        String[] value = entry.getValue().toString().split(";");
+        score_name.setText(value[0]);
+        score.setText(value[1]);
 
         return layout;
     }

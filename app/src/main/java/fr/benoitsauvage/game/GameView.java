@@ -8,9 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -98,7 +96,6 @@ class GameView extends View {
 
         try {
             tileGenerator.generateTiles();
-            Log.d("TILE", "GENERATE");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -211,8 +208,6 @@ class GameView extends View {
             character.PLAYER_HEIGHT = GRID_CELL_SIZE * 10;
         else
             character.PLAYER_HEIGHT = ((underTile.pos_y / GRID_CELL_SIZE) - 1) * GRID_CELL_SIZE;
-
-        Log.d("TILE", Integer.toString(character.PLAYER_HEIGHT));
     }
 
     private String loadTilesJSON() {
@@ -264,23 +259,27 @@ class GameView extends View {
 
     private void checkWin() {
         if (character.x > 14 * GRID_CELL_SIZE) {
-            handler.removeCallbacksAndMessages(null);
             winGame();
         }
     }
 
     private void gameOver() {
         Intent intent = new Intent(getContext(), GameOverActivity.class);
-        intent.putExtra("time", start_time);
         intent.putExtra("title", getResources().getString(R.string.game_over_title));
-        getContext().startActivity(intent);
+        endGame(intent);
     }
 
     private void winGame() {
         Intent intent = new Intent(getContext(), GameOverActivity.class);
-        intent.putExtra("time", start_time);
         intent.putExtra("title", getResources().getString(R.string.win_title));
         intent.putExtra("win", true);
+        endGame(intent);
+    }
+
+    private void endGame(Intent intent) {
+        handler.removeCallbacksAndMessages(null);
+        intent.putExtra("time", start_time);
+        intent.putExtra("life", character.LIFE);
         getContext().startActivity(intent);
     }
 
