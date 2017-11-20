@@ -12,6 +12,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
 public class GameOverActivity extends Activity {
 
     Context context;
@@ -23,11 +30,13 @@ public class GameOverActivity extends Activity {
     long start_time;
     long end_time;
 
+    int score;
+    final int MAX_TIME = 120000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_over);
-
         context = this;
 
         sharedPref = this.getSharedPreferences("scores", Context.MODE_PRIVATE);
@@ -37,6 +46,7 @@ public class GameOverActivity extends Activity {
         start_time = intent.getLongExtra("time", 0);
         end_time = System.currentTimeMillis();
         String title = intent.getStringExtra("title");
+        int life = intent.getIntExtra("life", 0);
 
         Button menu = findViewById(R.id.game_over_menu);
         Button ok = findViewById(R.id.input_ok);
@@ -44,10 +54,14 @@ public class GameOverActivity extends Activity {
         TextView title_text = findViewById(R.id.game_over_title);
         input = findViewById(R.id.player_name);
 
-        int score = (int) (end_time - start_time) / 100;
+        score = (int) (MAX_TIME - (end_time - start_time)) / 100;
 
         if (intent.getBooleanExtra("win", false))
             score += 1000;
+        else
+            score = (score - 1000) > 0 ? (score - 1000) : 0;
+
+        score += life * 50;
 
         score_text.setText(Integer.toString(score));
         title_text.setText(title.toUpperCase());
@@ -58,7 +72,8 @@ public class GameOverActivity extends Activity {
                 String name = input.getText().toString().trim();
 
                 if (name.length() != 0) {
-                    editor.putLong(name, (end_time - start_time) / 100);
+                    UUID uuid = UUID.randomUUID();
+                    editor.putString(uuid.toString(), name + ";" + Integer.toString(score));
                     editor.commit();
                     backToHome();
                 } else {
