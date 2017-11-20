@@ -1,6 +1,8 @@
 package fr.benoitsauvage.game;
 
 import android.graphics.Canvas;
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +27,10 @@ public class MobGenerator {
     }
 
     public void generateMobs() throws JSONException {
+        mobs.clear();
         JSONArray array = new JSONArray(json);
+
+        Log.d("MOB", Integer.toString(array.length()));
 
         for (int i = 0; i < array.length(); ++i) {
             JSONObject object = array.getJSONObject(i);

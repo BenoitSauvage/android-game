@@ -23,6 +23,8 @@ public class Character implements Runnable {
     boolean can_move_right;
     boolean can_move_left;
 
+    boolean is_alive = true;
+
     Tile onTile;
 
     int JUMP_HEIGHT = 500;
@@ -45,23 +47,27 @@ public class Character implements Runnable {
 
     @Override
     public void run() {
-        parent.invalidate();
+        if (is_alive) {
+            parent.invalidate();
 
-        if (has_to_move) {
-            // parent.checkMobs();
+            parent.checkMobs();
 
             if (INVICIBILITY > 0) {
                 --INVICIBILITY;
             }
 
-            if (is_moving) {
-                parent.checkColission();
+            if (has_to_move) {
+                if (is_moving) {
+                    parent.checkColission();
 
-                if (move_x > 0 && parent.getWidth() >= (x + w + move_x) && can_move_right)
-                    x += move_x;
+                    if (move_x > 0 && parent.getWidth() >= (x + w + move_x) && can_move_right)
+                        x += move_x;
 
-                if (move_x < 0 && (x + move_x) >= 0  && can_move_left)
-                    x += move_x;
+                    if (move_x < 0 && (x + move_x) >= 0  && can_move_left)
+                        x += move_x;
+                }
+            } else {
+                parent.moveBackground();
             }
 
             if (is_jumping) {
@@ -77,11 +83,9 @@ public class Character implements Runnable {
                     is_moving_jump = false;
                 }
             }
-        } else {
-            parent.moveBackground();
-        }
 
-        handler.post(this);
+            handler.post(this);
+        }
     }
 
     public void render(Canvas canvas) {

@@ -42,18 +42,15 @@ class GameView extends View {
 
     int height, width;
 
-    public GameView(Context context, Handler h) {
-        super(context);
-        this.context = context;
+    public GameView(Context c, Handler h) {
+        super(c);
+        context = c;
         handler = h;
 
         image = BitmapFactory.decodeResource(getResources(), R.drawable.spritesheet);
         IMAGE_SIZE = image.getWidth() / NB_COLUMNS;
 
         character = new Character(this, handler);
-
-        // Init player life
-        character.LIFE = 6;
 
         // Init player deplacement
         character.has_to_move = true;
@@ -96,6 +93,7 @@ class GameView extends View {
 
         try {
             tileGenerator.generateTiles();
+            Log.d("TILE", "GENERATE");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -112,15 +110,14 @@ class GameView extends View {
 
         checkGameOver();
 
-        if (character.x > 300) {
-            character.has_to_move = false;
-        }
-
         canvas.drawBitmap(background, backgroundSrc, backgroundDest, null);
-        // canvas.drawBitmap(background, 0.0f, 0.0f, null);
         mobGenerator.renderMobs(canvas);
         lifeManager.render(canvas);
         character.render(canvas);
+
+        if (character.x >= 300) {
+            character.has_to_move = false;
+        }
     }
 
     public void checkColission() {
@@ -157,9 +154,11 @@ class GameView extends View {
                     mob.pos_x + GRID_CELL_SIZE,
                     mob.height * GRID_CELL_SIZE + GRID_CELL_SIZE
             );
+
             if (playerRect.intersect(mobRect)) {
                 character.LIFE -= 1;
                 character.INVICIBILITY = 100;
+
             }
         }
     }
@@ -250,13 +249,14 @@ class GameView extends View {
 
     private void checkGameOver() {
         if (character.LIFE <= 0) {
+            handler.removeCallbacksAndMessages(null);
             gameOver();
         }
     }
 
     private void gameOver() {
-        Intent intent = new Intent(context, GameOverActivity.class);
-        context.startActivity(intent);
+        Intent intent = new Intent(getContext(), GameOverActivity.class);
+        getContext().startActivity(intent);
     }
 
     public void drawBackground(ArrayList<Tile> tiles) {
@@ -275,14 +275,35 @@ class GameView extends View {
 
     public void moveBackground() {
 
-        checkColission();
+        int delta = 0;
 
-        int delta = 10;
-        backgroundSrc = new Rect(delta, 0, width + delta, height);
+        if (character.is_moving) {
+            if (character.is_moving_right && character.can_move_right) {
+                delta = 10;
+            }
 
-        for (Tile tile : tileGenerator.tiles) {
-            Log.d("POS_X", Integer.toString(tile.pos_x));
-            tile.pos_x -= delta;
+            if (character.is_moving_left && character.can_move_left)
+                delta = -10;
+
+            backgroundSrc = new Rect(backgroundSrc.left + delta, 0, backgroundSrc.right + delta, height);
+            character.move_x = delta;
+
+            if (backgroundSrc.left <= 0) {
+                character.has_to_move = true;
+                character.x -= 10;
+            }
+
+            checkColission();
+
+            for (Tile tile : tileGenerator.tiles) {
+                tile.pos_x -= delta;
+            }
+
+            for (Mob mob : mobGenerator.mobs) {
+                mob.start_x -= delta;
+                mob.end_x -= delta;
+                mob.pos_x -= delta;
+            }
         }
     }
 }

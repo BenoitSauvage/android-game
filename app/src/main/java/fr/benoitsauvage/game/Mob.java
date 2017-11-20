@@ -2,9 +2,11 @@ package fr.benoitsauvage.game;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
+import android.util.Log;
 
 public class Mob implements Runnable {
 
@@ -15,7 +17,7 @@ public class Mob implements Runnable {
     boolean go_right = true;
 
     int pos_x, move_x;
-    int start, end, height;
+    int start_x, end_x, height;
 
     int GRID_X = 1;
     int GRID_Y = 5;
@@ -27,8 +29,8 @@ public class Mob implements Runnable {
         parent = view;
         handler = h;
 
-        this.start = start;
-        this.end = end;
+        this.start_x = start * parent.GRID_CELL_SIZE;
+        this.end_x = end * parent.GRID_CELL_SIZE;
         this.height = height;
 
         pos_x = (start - 1) * parent.GRID_CELL_SIZE;
@@ -48,17 +50,17 @@ public class Mob implements Runnable {
         if (is_alive) {
             parent.invalidate();
 
-            if (go_right && end * parent.GRID_CELL_SIZE > pos_x) {
+            if (go_right && end_x > pos_x) {
                 move_x = +5;
 
-                if ((end - 1) * parent.GRID_CELL_SIZE <= pos_x + move_x)
+                if (end_x - parent.GRID_CELL_SIZE <= pos_x + move_x)
                     go_right = false;
             }
 
-            if (!go_right && (start - 1) * parent.GRID_CELL_SIZE < pos_x) {
+            if (!go_right && start_x - parent.GRID_CELL_SIZE < pos_x) {
                 move_x = -5;
 
-                if ((start - 1) * parent.GRID_CELL_SIZE >= pos_x + move_x)
+                if (start_x - parent.GRID_CELL_SIZE >= pos_x + move_x)
                     go_right = true;
             }
 
@@ -66,6 +68,8 @@ public class Mob implements Runnable {
 
             handler.post(this);
         }
+
+        Log.d("THREAD", "MOB RUNNING");
     }
 
     public void render(Canvas canvas) {
@@ -76,7 +80,6 @@ public class Mob implements Runnable {
                 height * parent.GRID_CELL_SIZE
         );
 
-        /*RectF dest = new RectF(0, 0, parent.GRID_CELL_SIZE, parent.GRID_CELL_SIZE);*/
         canvas.drawBitmap(image, src, dest, null);
     }
 }

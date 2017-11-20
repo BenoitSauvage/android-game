@@ -31,6 +31,7 @@ public class TileGenerator {
     }
 
     public void generateTiles() throws JSONException {
+        tiles.clear();
         JSONArray array = new JSONArray(json);
 
         for (int i = 0; i < array.length(); ++i) {
