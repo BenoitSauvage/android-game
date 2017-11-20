@@ -47,7 +47,7 @@ public class GameOverActivity extends Activity {
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = input.getText().toString();
+                String name = input.getText().toString().trim();
 
                 if (name.length() != 0) {
                     editor.putLong(name, (end_time - start_time) / 100);

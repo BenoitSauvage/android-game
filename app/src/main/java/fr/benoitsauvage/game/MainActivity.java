@@ -14,10 +14,20 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         Button play = findViewById(R.id.button_play);
+        Button scores = findViewById(R.id.button_scores);
+
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, GameActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        scores.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ScoresActivity.class);
                 startActivity(intent);
             }
         });
