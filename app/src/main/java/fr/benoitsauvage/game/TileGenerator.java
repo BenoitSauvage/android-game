@@ -1,8 +1,10 @@
 package fr.benoitsauvage.game;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +29,8 @@ public class TileGenerator {
         image = BitmapFactory.decodeResource(view.getResources(), R.drawable.spritesheet);
         IMAGE_SIZE = image.getWidth() / NB_COLUMNS;
 
+        Log.d("IMAGE", Integer.toString(IMAGE_SIZE));
+
         json = jsonString;
     }
 
@@ -44,6 +48,7 @@ public class TileGenerator {
             int ly = object.getInt("ly");
 
             Tile tile = new Tile(image, lx, ly, x, y, IMAGE_SIZE, GRID_CELL_SIZE);
+
             tiles.add(tile);
         }
 

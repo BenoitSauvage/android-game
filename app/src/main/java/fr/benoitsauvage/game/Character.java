@@ -1,8 +1,11 @@
 package fr.benoitsauvage.game;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.util.Log;
 
@@ -38,11 +41,25 @@ public class Character implements Runnable {
 
     int move_x = 0;
 
+    int GRID_X = 1;
+    int GRID_Y = 4;
+
+    Bitmap image;
+    Rect src;
+
     public Character(GameView view, Handler h) {
         parent = view;
         handler = h;
 
         is_moving = false;
+
+        image = parent.image;
+        src = new Rect(
+                (GRID_X - 1) * parent.IMAGE_SIZE,
+                (GRID_Y - 1) * parent.IMAGE_SIZE,
+                GRID_X * parent.IMAGE_SIZE,
+                GRID_Y * parent.IMAGE_SIZE
+        );
     }
 
     @Override
@@ -90,13 +107,15 @@ public class Character implements Runnable {
 
     public void render(Canvas canvas) {
         Paint p = new Paint();
-        p.setColor(Color.RED);
+        p.setAlpha(255);
 
         if (INVICIBILITY > 0) {
-            p.setColor(Color.BLUE);
+            if (INVICIBILITY % 10 == 0)
+                p.setAlpha(0);
         }
 
-        canvas.drawRect(x, y - h, x + w, y, p);
+        RectF dest = new RectF(x, y - h, x + w, y);
+        canvas.drawBitmap(image, src, dest, p);
     }
 
     public void moveRight() {

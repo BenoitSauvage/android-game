@@ -36,13 +36,21 @@ public class GameOverActivity extends Activity {
         Intent intent = getIntent();
         start_time = intent.getLongExtra("time", 0);
         end_time = System.currentTimeMillis();
+        String title = intent.getStringExtra("title");
 
         Button menu = findViewById(R.id.game_over_menu);
         Button ok = findViewById(R.id.input_ok);
-        TextView score = findViewById(R.id.score);
+        TextView score_text = findViewById(R.id.score);
+        TextView title_text = findViewById(R.id.game_over_title);
         input = findViewById(R.id.player_name);
 
-        score.setText(Long.toString((end_time - start_time) / 100));
+        int score = (int) (end_time - start_time) / 100;
+
+        if (intent.getBooleanExtra("win", false))
+            score += 1000;
+
+        score_text.setText(Integer.toString(score));
+        title_text.setText(title.toUpperCase());
 
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
